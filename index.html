@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Infinite Scroll Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <div id="post-list">
+      <!-- 여기에 포스트 목록이 동적으로 추가됩니다. -->
+    </div>
+    <div class="loading-message" style="display: none;">
+      로딩 중...
+      <!-- 로딩 중임을 나타내는 요소 -->
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        let page = 1;
+        const perPage = 10; // 한 페이지당 아이템 수
+
+        // JSONPlaceholder의 포스트 데이터를 가져오는 함수
+        function loadPosts() {
+          $.get(
+            `https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=${perPage}`,
+            function (data) {
+              data.forEach((post) => {
+                $("#post-list").append(
+                  `<div class="post"><h2>${post.title}</h2><p>${post.body}</p></div>`
+                );
+              });
+              page++; // 다음 페이지로 이동
+            }
+          );
+        }
+
+        // 초기 페이지 로드
+        loadPosts();
+
+        // 스크롤 이벤트 감지
+        $(window).scroll(function () {
+          if (
+            $(window).scrollTop() + $(window).height() >=
+            $(document).height()
+          ) {
+            // 스크롤이 최하단에 도달하면 데이터 불러오기
+            loadPosts();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
